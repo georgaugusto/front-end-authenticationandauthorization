@@ -14,9 +14,10 @@ export const GlobalStyle = createGlobalStyle`
     --secundaria0: #5A5E69;
     --secundaria1: #1D1F24;
     --secundaria2: #242424;
+    --secundaria3: #666360;
 
     --success: #47BC4C;
-    --danger: #E42722;
+    --danger: #c72828;
     --dark: #5A5D67;
     --attention: #F3D534;
   }

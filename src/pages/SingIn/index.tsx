@@ -1,12 +1,36 @@
-import { FormEvent, useContext, useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+/*eslint-disable @typescript-eslint/no-explicit-any */
+
+import { useContext, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import { useNavigate } from 'react-router-dom';
+import { FiMail, FiLock } from 'react-icons/fi';
+
 import { AuthContext } from '../../contexts/AuthContext';
 
-import { Container } from './styles';
+import { Container, Content, AnimationContainer } from './styles';
+import Button from '../../components/Button';
+import { Input } from '../../components/Input';
+import reactImg from '../../assets/react.png';
 
-const Stock: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+const signInFormSchema = yup.object().shape({
+  email: yup
+    .string()
+    .email('Deve ser um e-mail válido')
+    .max(255)
+    .required('Email obrigatório'),
+  password: yup.string().max(255).required('Senha obrigatório'),
+});
+
+const SingIn: React.FC = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(signInFormSchema),
+  });
 
   const navigate = useNavigate();
 
@@ -17,47 +41,41 @@ const Stock: React.FC = () => {
     if (token) navigate('/dashboard');
   }, [navigate]);
 
-  async function handleSubmit(event: FormEvent) {
-    event.preventDefault();
-
+  const handleSignIn = async (values: any) => {
     const data = {
-      email,
-      password,
+      email: values.email,
+      password: values.password,
     };
     await signIn(data);
-  }
+  };
 
   return (
     <Container>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-        />
-        <button type="submit">Entrar</button>
-      </form>
-      <div>
-        <Link to="/">singIn</Link>
-        <Link to="/dashboard">dashboard</Link>
-        <Link to="/private">private</Link>
-        <Link to="/adm">Adm</Link>
-        <Link
-          to="/"
-          onClick={() => {
-            window.localStorage.clear();
-          }}
-        >
-          logout
-        </Link>
-      </div>
+      <Content>
+        <AnimationContainer>
+          <img src={reactImg} alt="logo Sol ou Chuva" />
+
+          <form onSubmit={handleSubmit(handleSignIn)}>
+            <Input
+              type="text"
+              placeholder="E-mail"
+              Icon={FiMail}
+              error={errors.email}
+              {...register('email')}
+            />
+            <Input
+              type="password"
+              placeholder="Password"
+              Icon={FiLock}
+              error={errors.password}
+              {...register('password')}
+            />
+            <Button type="submit">Entrar</Button>
+          </form>
+        </AnimationContainer>
+      </Content>
     </Container>
   );
 };
 
-export default Stock;
+export default SingIn;
