@@ -1,5 +1,5 @@
 <h2 align="center">
-  Back-end - Autenticação e autorização!
+  Front-end - Autenticação e autorização!
 </h2>
 
 <p align="center">
